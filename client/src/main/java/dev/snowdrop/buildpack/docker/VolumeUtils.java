@@ -56,7 +56,6 @@ public class VolumeUtils {
   }
 
   private static boolean internalAddContentToVolume(DockerClient dc, String volumeName, String useImage, String prefix, int uid, int gid, ContainerEntry... entries) {
-    
     List<String> command = Stream.of("").collect(Collectors.toList());
     String dummyId = ContainerUtils.createContainer(dc, useImage, command, new VolumeBind(volumeName, mountPrefix));
     ContainerUtils.addContentToContainer(dc, dummyId, prefix, uid, gid, entries);
