@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import dev.snowdrop.buildpack.config.DockerConfig;
 import dev.snowdrop.buildpack.config.PlatformConfig;
 import dev.snowdrop.buildpack.docker.BuildContainerUtils;
+import dev.snowdrop.buildpack.docker.ImageUtils;
 import dev.snowdrop.buildpack.lifecycle.LifecycleExecutor;
 import dev.snowdrop.buildpack.lifecycle.Version;
 import dev.snowdrop.buildpack.utils.LifecycleMetadata;
@@ -86,7 +87,10 @@ public class BuildpackBuild {
         log.info("Pulling Run Image(s)");
 
         //precache the runimages in the orig builder before extending it.
-        builder.getRunImages(new Version(activePlatformLevel));
+        List<String> runImages = builder.getRunImages(new Version(activePlatformLevel));
+        if(runImages!=null){
+            ImageUtils.pullImages(config.getDockerConfig(), runImages.toArray(new String[]{}));
+        }
 
         log.debug("Creating Ephemeral Builder Image...");
 

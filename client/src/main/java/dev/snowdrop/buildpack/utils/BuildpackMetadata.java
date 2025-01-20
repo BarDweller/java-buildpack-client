@@ -46,10 +46,10 @@ public class BuildpackMetadata {
             }
 
             // remap docker.io references back to docker.io
-            if (ri.startsWith("index.docker.io/")) {
-                ri = ri.substring("index.docker.io/".length());
-                ri = "docker.io/" + ri;
-            }
+            // if (ri.startsWith("index.docker.io/")) {
+            //     ri = ri.substring("index.docker.io/".length());
+            //     ri = "docker.io/" + ri;
+            // }
             
             return ri;
         } catch (Exception e) {

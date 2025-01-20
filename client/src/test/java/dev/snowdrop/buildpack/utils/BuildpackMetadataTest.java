@@ -30,7 +30,7 @@ public class BuildpackMetadataTest {
         String dockerJson = "{\"stack\":{\"runImage\":{\"image\":\"index.docker.io/patent:stilettos\"}}}}"; 
         String dockerImage = BuildpackMetadata.getRunImageFromMetadataJSON(dockerJson);
         assertNotNull(dockerImage);
-        assertEquals("docker.io/patent:stilettos", dockerImage);
+        assertEquals("index.docker.io/patent:stilettos", dockerImage);
 
         try{
             String badJson = "{\"stack\":{\"runImage\":{\"notimage\":\"index.docker.io/patent:stilettos\"}}}}"; 
