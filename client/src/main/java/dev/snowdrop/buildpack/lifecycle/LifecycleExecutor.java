@@ -177,7 +177,7 @@ public class LifecycleExecutor {
         ImageReference runRef = getRunReference(phase);
         if(runRef!=null){
             String oldToml = new String(phase.getAnalyzedToml());
-            String newToml = oldToml.replaceAll(runRef.getReference(),runRef.getReferenceWithLatest());     
+            String newToml = oldToml.replace(runRef.getReference(),runRef.getReferenceWithLatest());     
             phase.updateAnalyzedToml(newToml);
             return runRef;
         }else{

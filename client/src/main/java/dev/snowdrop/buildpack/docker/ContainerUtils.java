@@ -40,10 +40,8 @@ import com.github.dockerjava.api.model.Volume;
 import dev.snowdrop.buildpack.BuildpackException;
 import dev.snowdrop.buildpack.docker.ContainerEntry.DataSupplier;
 
-
 public class ContainerUtils {
   private static final Logger log = LoggerFactory.getLogger(ContainerUtils.class);
-
 
   public static String createContainer(DockerClient dc, String imageReference, VolumeBind... volumes) {
     return createContainer(dc, imageReference, null, volumes);
@@ -55,12 +53,12 @@ public class ContainerUtils {
 
   public static String createContainer(DockerClient dc, String imageReference, List<String> command,
       VolumeBind... volumes) {
-        return createContainer(dc, imageReference, command, 0, null, null, null, volumes);
+    return createContainer(dc, imageReference, command, 0, null, null, null, volumes);
   }
 
   public static String createContainer(DockerClient dc, String imageReference, List<String> command,
-        Integer runAsId, Map<String,String> env, String securityOpts, String network,
-        List<VolumeBind> volumes) {
+      Integer runAsId, Map<String, String> env, String securityOpts, String network,
+      List<VolumeBind> volumes) {
 
     CreateContainerCmd ccc = dc.createContainerCmd(imageReference);
     if (volumes != null) {
@@ -71,16 +69,15 @@ public class ContainerUtils {
       }
 
       ccc.getHostConfig().withBinds(binds);
-    }  
+    }
 
-    return createContainerInternal(dc,imageReference,command,runAsId,env,securityOpts,network,ccc);
+    return createContainerInternal(dc, imageReference, command, runAsId, env, securityOpts, network, ccc);
   }
 
   public static String createContainer(DockerClient dc, String imageReference, List<String> command,
-        Integer runAsId, Map<String,String> env, String securityOpts, String network,
-        VolumeBind... volumes) {
+      Integer runAsId, Map<String, String> env, String securityOpts, String network,
+      VolumeBind... volumes) {
 
-          
     CreateContainerCmd ccc = dc.createContainerCmd(imageReference);
     if (volumes != null) {
       List<Bind> binds = new ArrayList<>();
@@ -91,22 +88,22 @@ public class ContainerUtils {
       ccc.getHostConfig().withBinds(binds);
     }
 
-    return createContainerInternal(dc,imageReference,command,runAsId,env,securityOpts,network,ccc);
+    return createContainerInternal(dc, imageReference, command, runAsId, env, securityOpts, network, ccc);
   }
 
   private static String createContainerInternal(DockerClient dc, String imageReference, List<String> command,
-        Integer runAsId, Map<String,String> env, String securityOpts, String network, CreateContainerCmd ccc) {
+      Integer runAsId, Map<String, String> env, String securityOpts, String network, CreateContainerCmd ccc) {
 
-    if(runAsId!=null){
-        ccc.withUser(""+runAsId);
-    }
-    
-    if(env!=null) {
-      ccc.withEnv( env.entrySet().stream().map(e -> e.getKey()+"="+e.getValue()).collect(Collectors.toList()));
+    if (runAsId != null) {
+      ccc.withUser("" + runAsId);
     }
 
-    if(securityOpts!=null){
-      ccc.withHostConfig(ccc.getHostConfig().withSecurityOpts(Collections.singletonList(securityOpts)));  
+    if (env != null) {
+      ccc.withEnv(env.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.toList()));
+    }
+
+    if (securityOpts != null) {
+      ccc.withHostConfig(ccc.getHostConfig().withSecurityOpts(Collections.singletonList(securityOpts)));
     }
 
     if (command != null) {
@@ -114,8 +111,8 @@ public class ContainerUtils {
       ccc.withEntrypoint("");
     }
 
-    if (network!=null){
-       ccc.withHostConfig(ccc.getHostConfig().withNetworkMode(network));
+    if (network != null) {
+      ccc.withHostConfig(ccc.getHostConfig().withNetworkMode(network));
     }
 
     CreateContainerResponse ccr = ccc.exec();
@@ -125,28 +122,31 @@ public class ContainerUtils {
 
   public static String commitContainer(DockerClient dc, String containerId) {
     return dc.commitCmd(containerId).exec();
-  }  
+  }
 
   public static void removeContainer(DockerClient dc, String containerId) {
     dc.removeContainerCmd(containerId).withForce(true).exec();
   }
 
   public static void addContentToContainer(DockerClient dc, String containerId, List<ContainerEntry> entries) {
-    addContentToContainer(dc, containerId, entries != null ? entries.toArray(new ContainerEntry[entries.size()]) : new ContainerEntry[0]);
+    addContentToContainer(dc, containerId,
+        entries != null ? entries.toArray(new ContainerEntry[entries.size()]) : new ContainerEntry[0]);
   }
-  
+
   public static void addContentToContainer(DockerClient dc, String containerId, ContainerEntry... entries) {
     addContentToContainer(dc, containerId, "", null, null, entries);
   }
 
   public static void addContentToContainer(DockerClient dc, String containerId, String pathInContainer, Integer userId,
       Integer groupId, File content) {
-    addContentToContainer(dc, containerId, pathInContainer, userId, groupId, new FileContent("", content).getContainerEntries());
+    addContentToContainer(dc, containerId, pathInContainer, userId, groupId,
+        new FileContent("", content).getContainerEntries());
   }
 
   public static void addContentToContainer(DockerClient dc, String containerId, String pathInContainer, Integer userId,
       Integer groupId, String name, Integer mode, String content) {
-    addContentToContainer(dc, containerId, pathInContainer, userId, groupId, new StringContent(name, mode, content).getContainerEntries());
+    addContentToContainer(dc, containerId, pathInContainer, userId, groupId,
+        new StringContent(name, mode, content).getContainerEntries());
   }
 
   /**
@@ -164,13 +164,13 @@ public class ContainerUtils {
         if (unknown) {
           // add parents of this FIRST
           addParents(tout, seenDirs, uid, gid, parent);
-          
-          log.debug("adding "+parent+"/ to tar");
+
+          log.debug("adding " + parent + "/ to tar");
           // and then add this =)
           TarArchiveEntry tae = new TarArchiveEntry(parent + "/");
           tae.setSize(0);
           tae.setUserId(uid);
-          tae.setGroupId(gid);     
+          tae.setGroupId(gid);
           tae.setMode(TarArchiveEntry.DEFAULT_DIR_MODE);
           tout.putArchiveEntry(tae);
           tout.closeArchiveEntry();
@@ -184,13 +184,16 @@ public class ContainerUtils {
   /**
    * Adds content to the container, with specified uid/gid
    */
-  public static void addContentToContainer(DockerClient dc, String containerId, String pathInContainer, Integer userId, Integer groupId, List<ContainerEntry> entries) {
-    addContentToContainer(dc, containerId, pathInContainer, userId, groupId, entries != null ? entries.toArray(new ContainerEntry[entries.size()]) : new ContainerEntry[0]);
+  public static void addContentToContainer(DockerClient dc, String containerId, String pathInContainer, Integer userId,
+      Integer groupId, List<ContainerEntry> entries) {
+    addContentToContainer(dc, containerId, pathInContainer, userId, groupId,
+        entries != null ? entries.toArray(new ContainerEntry[entries.size()]) : new ContainerEntry[0]);
   }
 
-  public static void addContentToContainer(DockerClient dc, String containerId, String pathInContainer, Integer userId, Integer groupId, ContainerEntry... entries) {
+  public static void addContentToContainer(DockerClient dc, String containerId, String pathInContainer, Integer userId,
+      Integer groupId, ContainerEntry... entries) {
 
-    log.debug("Adding to container "+containerId+" pathInContainer "+pathInContainer);
+    log.debug("Adding to container " + containerId + " pathInContainer " + pathInContainer);
 
     Set<String> seenDirs = new HashSet<>();
     // Don't add entry for "/", causes issues with tar format.
@@ -211,92 +214,93 @@ public class ContainerUtils {
       Runnable writer = new Runnable() {
         @Override
         public void run() {
-          try (TarArchiveOutputStream tout = new TarArchiveOutputStream(new GZIPOutputStream(new BufferedOutputStream(out)));) {
+          try (TarArchiveOutputStream tout = new TarArchiveOutputStream(
+              new GZIPOutputStream(new BufferedOutputStream(out)));) {
             tout.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX);
             for (ContainerEntry ve : entries) {
               // prefix the entry path with the pathInContainer value.
               String entryPath = ve.getPath();
-              
-              if(entryPath==null || entryPath.isEmpty()) {
+
+              if (entryPath == null || entryPath.isEmpty()) {
                 throw new IOException("Error path was empty");
               }
-              
+
               if (entryPath.startsWith("/"))
                 entryPath = entryPath.substring(1);
 
               // important! adds the parent dirs for the entries with the correct uid/gid.
               // (otherwise various buildpack tasks won't be able to write to them!)
               addParents(tout, seenDirs, uid, gid, entryPath);
-              
-              log.debug("adding "+entryPath+" to tar");
+
+              log.debug("adding " + entryPath + " to tar");
               // add this file entry.
               TarArchiveEntry tae = new TarArchiveEntry(entryPath);
               tae.setSize(ve.getSize());
               tae.setUserId(uid);
-              tae.setGroupId(gid);                            
-              tae.setMode(0100000 + ve.getMode()); //0100000 means 'regular file'
+              tae.setGroupId(gid);
+              tae.setMode(0100000 + ve.getMode()); // 0100000 means 'regular file'
               tout.putArchiveEntry(tae);
               tout.flush();
               DataSupplier cs = ve.getDataSupplier();
-              if(cs==null) {
+              if (cs == null) {
                 throw new IOException("Error DataSupplier was not provided");
               }
               try (InputStream is = ve.getDataSupplier().getData();) {
-                if(is==null) {
+                if (is == null) {
                   throw new IOException("Error DataSupplier gave null for getData");
                 }
                 copy(is, tout);
               }
               tout.closeArchiveEntry();
               tout.flush();
-              log.trace("add of "+entryPath+" complete");
-            } 
+              log.trace("add of " + entryPath + " complete");
+            }
           } catch (Exception e) {
             log.debug("Error during writer thread", e);
             writerException.set(e);
           }
-          log.trace("Writer thread complete");          
-        } 
-        };
+          log.trace("Writer thread complete");
+        }
+      };
 
       AtomicReference<Exception> readerException = new AtomicReference<>();
       Runnable reader = new Runnable() {
         @Override
         public void run() {
-          try{
+          try {
             log.trace("Creating copy command");
             CopyArchiveToContainerCmd c = dc.copyArchiveToContainerCmd(containerId)
-                                            .withRemotePath(containerPath)
-                                            .withTarInputStream(in);
+                .withRemotePath(containerPath)
+                .withTarInputStream(in);
             log.trace("Starting copy command");
             c.exec();
             log.trace("copy command complete");
           } catch (Exception e) {
             log.trace("Error during consumer thread", e);
-            writerException.set(e);
+            readerException.set(e);
           }
           log.trace("Consumer thread complete");
         }
       };
 
-      Thread t1 = new Thread(writer,"buildpack-tar-writer-thread");
+      Thread t1 = new Thread(writer, "buildpack-tar-writer-thread");
       Thread t2 = new Thread(reader, "buildpack-tar-reader-thread");
 
-      log.debug("Copying archive to container at "+containerPath);
+      log.debug("Copying archive to container at " + containerPath);
 
       log.trace("Launching tar stream creator thread");
       t1.start();
-      //add delay to wait for writer a bit.. 
-      try{
+      // add delay to wait for writer a bit..
+      try {
         Thread.sleep(500);
-      }catch(InterruptedException ie){
-        //ignore
+      } catch (InterruptedException ie) {
+        // ignore
       }
       log.trace("Launching tar stream consumer thread");
       t2.start();
 
       log.trace("joining threads");
-      try {        
+      try {
         t1.join();
         log.trace("-writer joined");
         t2.join();
@@ -318,33 +322,34 @@ public class ContainerUtils {
       }
       log.trace("copy contents complete without error.");
     } catch (IOException e) {
-        log.debug("IOException during copy content to container",e);
-        throw BuildpackException.launderThrowable(e);
+      log.debug("IOException during copy content to container", e);
+      throw BuildpackException.launderThrowable(e);
     }
   }
 
   public static byte[] getFileFromContainer(DockerClient dc, String id, String path) {
-    CopyArchiveFromContainerCmd copycmd = dc.copyArchiveFromContainerCmd(id, path);    
+    CopyArchiveFromContainerCmd copycmd = dc.copyArchiveFromContainerCmd(id, path);
     ByteArrayOutputStream file = new ByteArrayOutputStream();
-    try{
+    try {
       InputStream tarStream = copycmd.exec();
       TarArchiveInputStream tarInput = new TarArchiveInputStream(tarStream);
-      try{
+      try {
         TarArchiveEntry tarEntry = tarInput.getNextTarEntry();
-        while(tarEntry!=null){
-            copy(tarInput, file);
-            file.close();           
-            tarEntry = tarInput.getNextTarEntry();
+        while (tarEntry != null) {
+          copy(tarInput, file);
+          file.close();
+          tarEntry = tarInput.getNextTarEntry();
         }
         return file.toByteArray();
-      }finally{
-        if(tarInput!=null)tarInput.close();
+      } finally {
+        if (tarInput != null)
+          tarInput.close();
       }
-    }catch(NotFoundException nfe){
-        throw BuildpackException.launderThrowable("Unable to locate container '"+id+"'", nfe);
+    } catch (NotFoundException nfe) {
+      throw BuildpackException.launderThrowable("Unable to locate container '" + id + "'", nfe);
     } catch (IOException e) {
-        throw BuildpackException.launderThrowable("Unable to retrieve '"+path+"' from container", e);
-    }    
+      throw BuildpackException.launderThrowable("Unable to retrieve '" + path + "' from container", e);
+    }
   }
 
   private static final void copy(InputStream in, OutputStream out) {

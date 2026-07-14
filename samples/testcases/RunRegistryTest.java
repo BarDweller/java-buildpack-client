@@ -9,7 +9,7 @@ import java.io.File;
 import dev.snowdrop.buildpack.*;
 import dev.snowdrop.buildpack.config.*;
 import dev.snowdrop.buildpack.docker.*;
-import dev.snowdrop.buildpack.utils.OperatingSytem;
+import dev.snowdrop.buildpack.utils.OperatingSystem;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -87,8 +87,8 @@ public class RunRegistryTest {
          
       int exitCode = 0;
 
-      OperatingSytem os = OperatingSytem.getOperationSystem();
-      if(os != OperatingSytem.WIN) {
+      OperatingSystem os = OperatingSystem.getOperatingSystem();
+      if(os != OperatingSystem.WIN) {
           System.out.println("Building "+outputImage+" using "+authInfo.size()+" credentials, with builder "+builderImage);
           exitCode = BuildConfig.builder()
                            .withBuilderImage(new ImageReference(builderImage))

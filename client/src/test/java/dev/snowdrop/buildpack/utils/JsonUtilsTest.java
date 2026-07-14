@@ -28,8 +28,16 @@ public class JsonUtilsTest {
             String word = JsonUtils.getValue(root, "aWord");
             assertEquals("wibble", word);
 
+            // Test with leading slash
+            String wordWithSlash = JsonUtils.getValue(root, "/aWord");
+            assertEquals("wibble", wordWithSlash);
+
             String nestedWord = JsonUtils.getValue(root, "models/patent/color");
             assertEquals("red",nestedWord);
+
+            // Test nested with leading slash
+            String nestedWordWithSlash = JsonUtils.getValue(root, "/models/patent/color");
+            assertEquals("red", nestedWordWithSlash);
 
             String number = JsonUtils.getValue(root, "aNumber");
             assertEquals("1337", number);
@@ -37,6 +45,11 @@ public class JsonUtilsTest {
             List<String> wordList = JsonUtils.getArray(root, "heels");
             assertNotNull(wordList);
             assertEquals(3, wordList.size());
+
+            // Test array with leading slash
+            List<String> wordListWithSlash = JsonUtils.getArray(root, "/heels");
+            assertNotNull(wordListWithSlash);
+            assertEquals(3, wordListWithSlash.size());
 
             List<String> numberList = JsonUtils.getArray(root, "sizes");
             assertNotNull(numberList);

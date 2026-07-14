@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class JsonUtils {
     public static String getValue(JsonNode root, String path) {
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
         String[] parts = path.split("/");
         JsonNode next = root.get(parts[0]);
         if (next != null && parts.length > 1) {
@@ -19,6 +22,9 @@ public class JsonUtils {
         return next.asText();
       }
    public static List<String> getArray(JsonNode root, String path) {
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
         String[] parts = path.split("/");
         JsonNode next = root.get(parts[0]);
         if (next != null && parts.length > 1) {

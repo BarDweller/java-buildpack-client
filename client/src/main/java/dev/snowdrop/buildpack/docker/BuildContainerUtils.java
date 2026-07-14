@@ -61,7 +61,7 @@ public class BuildContainerUtils {
 
     private static void populateMountPointDirs(DockerClient dc, String targetContainerId, int uid, int gid, List<String> dirs){
         try (PipedInputStream in = new PipedInputStream(4096); PipedOutputStream out = new PipedOutputStream(in)) {
-            AtomicReference<Exception> writerException = new AtomicReference<>();
+            AtomicReference<Exception> cachedException = new AtomicReference<>();
 
             Runnable writer = new Runnable() {
                 @Override
@@ -78,7 +78,7 @@ public class BuildContainerUtils {
                             tout.closeArchiveEntry();
                         } 
                     } catch (Exception e) {
-                        writerException.set(e);
+                        cachedException.set(e);
                     }
                 } 
             };
@@ -86,7 +86,11 @@ public class BuildContainerUtils {
             Runnable reader = new Runnable() {
                 @Override
                 public void run() {
-                dc.copyArchiveToContainerCmd(targetContainerId).withRemotePath("/").withTarInputStream(in).exec();
+                    try {
+                        dc.copyArchiveToContainerCmd(targetContainerId).withRemotePath("/").withTarInputStream(in).exec();
+                    } catch (Exception e) {
+                        cachedException.set(e);
+                    }
                 }
             };
 
@@ -101,10 +105,10 @@ public class BuildContainerUtils {
                 throw BuildpackException.launderThrowable(ie);
             }
 
-            // did the write thread complete without issues? if not, bubble the cause.
-            Exception wio = writerException.get();
-            if (wio != null) {
-                throw BuildpackException.launderThrowable(wio);
+            // did either thread complete with issues? if so, bubble the cause.
+            Exception ex = cachedException.get();
+            if (ex != null) {
+                throw BuildpackException.launderThrowable(ex);
             }
         } catch (IOException e) {
             throw BuildpackException.launderThrowable(e);

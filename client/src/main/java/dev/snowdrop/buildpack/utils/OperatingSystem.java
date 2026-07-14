@@ -1,15 +1,15 @@
 package dev.snowdrop.buildpack.utils;
 
-public enum OperatingSytem {
+public enum OperatingSystem {
 
   WIN,
   LINUX,
   MAC,
   UNKNOWN;
-  
-  private static OperatingSytem os;
 
-  public static OperatingSytem getOperationSystem() {
+  private static OperatingSystem os;
+
+  public static OperatingSystem getOperatingSystem() {
     if (os == null) {
       String osName = System.getProperty("os.name").toLowerCase();
       if (osName.contains("win")) {
@@ -18,7 +18,7 @@ public enum OperatingSytem {
         os = LINUX;
       } else if (osName.contains("mac")) {
         os = MAC;
-      } else  { 
+      } else {
         os = UNKNOWN;
       }
     }
