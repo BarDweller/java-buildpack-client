@@ -56,12 +56,18 @@ jobs:
           git commit -m "chore: set release version: ${{steps.metadata.outputs.current-version}} in samples and README.md"
       - name: Maven release ${{steps.metadata.outputs.current-version}}
         run: |
+          if [[ "${GPG_SECRET_KEY_RAW}" == *"BEGIN PGP"* ]]; then
+            export MAVEN_GPG_KEY="${GPG_SECRET_KEY_RAW}"
+          else
+            echo "Decoding Base64 GPG secret key..."
+            export MAVEN_GPG_KEY=$(echo -n "${GPG_SECRET_KEY_RAW}" | base64 --decode)
+          fi        
           mvn -B release:prepare -Prelease -Darguments="-DskipTests -Dgpg.signer=bc" -DreleaseVersion=${{steps.metadata.outputs.current-version}} -DdevelopmentVersion=${{steps.metadata.outputs.next-version}}
           mvn -B release:perform -Darguments="-DperformRelease -DskipTests -Dgpg.signer=bc" -DperformRelease -Prelease
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-          MAVEN_GPG_KEY: ${{ secrets.GPG_SECRET_KEY }}
+          GPG_SECRET_KEY_RAW: ${{ secrets.GPG_SECRET_KEY }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       - name: Set dev version in the samples and readme
         run: |
