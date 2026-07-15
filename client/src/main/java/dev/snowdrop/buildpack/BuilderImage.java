@@ -87,14 +87,14 @@ public class BuilderImage {
             userId = Integer.valueOf(pc.getEnvironment().get("CNB_USER_ID")); 
         }
         if(pc.getEnvironment().containsKey("CNB_GROUP_ID")) { 
-            userId = Integer.valueOf(pc.getEnvironment().get("CNB_GROUP_ID")); 
+            groupId = Integer.valueOf(pc.getEnvironment().get("CNB_GROUP_ID")); 
         }
 
         String xtnLayers = ii.labels.get("io.buildpacks.extension.layers");
         //if xtnLayers is absent, or is just the empty json {}, there are no extensions.
         if(xtnLayers!=null && !xtnLayers.isEmpty()){
             xtnLayers = xtnLayers.trim();
-            xtnLayers.replaceAll("\\\\w", "");
+            xtnLayers = xtnLayers.replaceAll("\\\\w", "");
             if(xtnLayers.equals("{}")){
                 xtnLayers = null;
             }

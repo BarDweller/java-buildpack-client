@@ -156,8 +156,12 @@ public class ImageUtils {
       }
     }
 
-    if(lastSeen!=null && !allDone){
-      throw lastSeen;
+    if (!allDone) {
+      if (lastSeen != null) {
+        throw lastSeen;
+      } else {
+        throw new BuildpackException("Image pull operations timed out", new java.util.concurrent.TimeoutException());
+      }
     }
   }
 

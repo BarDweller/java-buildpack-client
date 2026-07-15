@@ -9,7 +9,7 @@ import java.io.File;
 import dev.snowdrop.buildpack.*;
 import dev.snowdrop.buildpack.config.*;
 import dev.snowdrop.buildpack.docker.*;
-import dev.snowdrop.buildpack.utils.OperatingSytem;
+import dev.snowdrop.buildpack.utils.OperatingSystem;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Optional;
@@ -71,8 +71,8 @@ public class RunTest {
 
       int exitCode = 0;
 
-      OperatingSytem os = OperatingSytem.getOperationSystem();
-      if(os != OperatingSytem.WIN) {
+      OperatingSystem os = OperatingSystem.getOperatingSystem();
+      if(os != OperatingSystem.WIN) {
           exitCode = BuildConfig.builder()
                            .withBuilderImage(new ImageReference(builderImage))
                            .withOutputImage(new ImageReference(outputImage))

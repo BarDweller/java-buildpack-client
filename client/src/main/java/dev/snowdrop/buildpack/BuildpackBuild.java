@@ -21,7 +21,7 @@ public class BuildpackBuild {
     private static final Logger log = LoggerFactory.getLogger(BuildpackBuild.class);
 
     //platforms stored in order of preference.
-    private final List<String> supportedPlatformLevels =Stream.of("0.12", "0.11", "0.10", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4").collect(Collectors.toCollection(ArrayList::new));
+    private final List<String> supportedPlatformLevels =Stream.of("0.14", "0.13", "0.12", "0.11", "0.10", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4").collect(Collectors.toCollection(ArrayList::new));
     //default platform level, used if not overridden
     public final String DEFAULT_PLATFORM_LEVEL = supportedPlatformLevels.get(0);
 

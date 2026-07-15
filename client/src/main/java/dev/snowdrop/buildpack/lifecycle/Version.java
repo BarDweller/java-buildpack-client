@@ -27,6 +27,23 @@ public class Version {
         return version;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Version other = (Version) obj;
+        return this.major == other.major && this.minor == other.minor;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * major + minor;
+    }
+
     public boolean equals(Version v){
         return this.major == v.major && this.minor == v.minor;
     }

@@ -61,6 +61,10 @@ public class Restorer implements LifecyclePhase, LifecyclePhaseAnalyzedTomlUpdat
             runAsId = 0;
         }
 
+        if(factory.getPlatformLevel().atLeast("0.14")){
+            args.addArg("-run", "/cnb/run.toml");
+        }
+
 
         String id = factory.getContainerForPhase(args.toArray(), runAsId);
         try{

@@ -14,41 +14,31 @@ jobs:
       # Each test is a different scenario, do not cancel running tests if one fails.
       fail-fast: false
       matrix:
-        # Define projects to test, don't use generated matrix, as will need projects appropriate for each jvm to test
-        projects: [
-           { project: "hello-spring",  java: "17", label: "M-P5-RL-J17-S", runner: "macos-13",       runtime: "podman5", root: "rootless" },
-           { project: "hello-spring",  java: "17", label: "U-P5-RL-J17-S", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootless" },
-           { project: "hello-spring",  java: "17", label: "U-P4-RL-J17-S", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootless" },
-           { project: "hello-spring",  java: "17", label: "M-P5-RF-J17-S", runner: "macos-13",       runtime: "podman5", root: "rootful" },
-           { project: "hello-spring",  java: "17", label: "U-P5-RF-J17-S", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootful" },
-           { project: "hello-spring",  java: "17", label: "U-P4-RF-J17-S", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootful" },
-           { project: "hello-spring",  java: "17", label: "U-D-RL-J17-S",  runner: "ubuntu-24.04",   runtime: "docker" },
-           { project: "hello-spring",  java: "17", label: "W-D-RL-J17-S",  runner: "windows-latest", runtime: "docker" },
-           { project: "hello-quarkus", java: "17", label: "M-P5-RL-J17-Q", runner: "macos-13",       runtime: "podman5", root: "rootless" },
-           { project: "hello-quarkus", java: "17", label: "U-P5-RL-J17-Q", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootless" },
-           { project: "hello-quarkus", java: "17", label: "U-P4-RL-J17-Q", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootless" },
-           { project: "hello-quarkus", java: "17", label: "M-P5-RF-J17-Q", runner: "macos-13",       runtime: "podman5", root: "rootful" },
-           { project: "hello-quarkus", java: "17", label: "U-P5-RF-J17-Q", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootful" },
-           { project: "hello-quarkus", java: "17", label: "U-P4-RF-J17-Q", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootful" },
-           { project: "hello-quarkus", java: "17", label: "U-D-RL-J17-Q",  runner: "ubuntu-24.04",   runtime: "docker" },
-           { project: "hello-spring",  java: "17", label: "W-D-RL-J17-Q",  runner: "windows-latest", runtime: "docker" },
-           { project: "hello-spring",  java: "21", label: "M-P5-RL-J21-S", runner: "macos-13",       runtime: "podman5", root: "rootless" },
-           { project: "hello-spring",  java: "21", label: "U-P5-RL-J21-S", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootless" },
-           { project: "hello-spring",  java: "21", label: "U-P4-RL-J21-S", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootless" },
-           { project: "hello-spring",  java: "21", label: "M-P5-RF-J21-S", runner: "macos-13",       runtime: "podman5", root: "rootful" },
-           { project: "hello-spring",  java: "21", label: "U-P5-RF-J21-S", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootful" },
-           { project: "hello-spring",  java: "21", label: "U-P4-RF-J21-S", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootful" },
-           { project: "hello-spring",  java: "21", label: "U-D-RL-J21-S",  runner: "ubuntu-24.04",   runtime: "docker" },
-           { project: "hello-spring",  java: "21", label: "W-D-RL-J21-S",  runner: "windows-latest", runtime: "docker" },
-           { project: "hello-quarkus", java: "21", label: "M-P5-RL-J21-Q", runner: "macos-13",       runtime: "podman5", root: "rootless" },
-           { project: "hello-quarkus", java: "21", label: "U-P5-RL-J21-Q", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootless" },
-           { project: "hello-quarkus", java: "21", label: "U-P4-RL-J21-Q", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootless" },
-           { project: "hello-quarkus", java: "21", label: "M-P5-RF-J21-Q", runner: "macos-13",       runtime: "podman5", root: "rootful" },
-           { project: "hello-quarkus", java: "21", label: "U-P5-RF-J21-Q", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootful" },
-           { project: "hello-quarkus", java: "21", label: "U-P4-RF-J21-Q", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootful" },
-           { project: "hello-quarkus", java: "21", label: "U-D-RL-J21-Q",  runner: "ubuntu-24.04",   runtime: "docker" },
-           { project: "hello-spring",  java: "21", label: "W-D-RL-J21-Q",  runner: "windows-latest", runtime: "docker" }
-        ]
+        projects:
+          - { project: "hello-spring",  java: "17", label: "U-P5-RL-J17-S", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootless" }
+          - { project: "hello-spring",  java: "17", label: "U-P4-RL-J17-S", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootless" }
+          - { project: "hello-spring",  java: "17", label: "U-P5-RF-J17-S", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootful" }
+          - { project: "hello-spring",  java: "17", label: "U-P4-RF-J17-S", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootful" }
+          - { project: "hello-spring",  java: "17", label: "U-D-RL-J17-S",  runner: "ubuntu-24.04",   runtime: "docker" }
+          - { project: "hello-spring",  java: "17", label: "W-D-RL-J17-S",  runner: "windows-latest", runtime: "docker" }
+          - { project: "hello-quarkus", java: "17", label: "U-P5-RL-J17-Q", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootless" }
+          - { project: "hello-quarkus", java: "17", label: "U-P4-RL-J17-Q", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootless" }
+          - { project: "hello-quarkus", java: "17", label: "U-P5-RF-J17-Q", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootful" }
+          - { project: "hello-quarkus", java: "17", label: "U-P4-RF-J17-Q", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootful" }
+          - { project: "hello-quarkus", java: "17", label: "U-D-RL-J17-Q",  runner: "ubuntu-24.04",   runtime: "docker" }
+          - { project: "hello-spring",  java: "17", label: "W-D-RL-J17-Q",  runner: "windows-latest", runtime: "docker" }
+          - { project: "hello-spring",  java: "21", label: "U-P5-RL-J21-S", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootless" }
+          - { project: "hello-spring",  java: "21", label: "U-P4-RL-J21-S", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootless" }
+          - { project: "hello-spring",  java: "21", label: "U-P5-RF-J21-S", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootful" }
+          - { project: "hello-spring",  java: "21", label: "U-P4-RF-J21-S", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootful" }
+          - { project: "hello-spring",  java: "21", label: "U-D-RL-J21-S",  runner: "ubuntu-24.04",   runtime: "docker" }
+          - { project: "hello-spring",  java: "21", label: "W-D-RL-J21-S",  runner: "windows-latest", runtime: "docker" }
+          - { project: "hello-quarkus", java: "21", label: "U-P5-RL-J21-Q", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootless" }
+          - { project: "hello-quarkus", java: "21", label: "U-P4-RL-J21-Q", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootless" }
+          - { project: "hello-quarkus", java: "21", label: "U-P5-RF-J21-Q", runner: "ubuntu-24.04",   runtime: "podman5", root: "rootful" }
+          - { project: "hello-quarkus", java: "21", label: "U-P4-RF-J21-Q", runner: "ubuntu-24.04",   runtime: "podman4", root: "rootful" }
+          - { project: "hello-quarkus", java: "21", label: "U-D-RL-J21-Q",  runner: "ubuntu-24.04",   runtime: "docker" }
+          - { project: "hello-spring",  java: "21", label: "W-D-RL-J21-Q",  runner: "windows-latest", runtime: "docker" }
 
     runs-on: [ "${{ matrix.projects.runner }}" ]
     # Keep name short, as github ui does not allow many characters to be displayed
@@ -68,26 +58,6 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: false
-
-      # Install and configure podman for mac
-      - name: Podman5 Mac
-        if: matrix.projects.runner == 'macos-13' && matrix.projects.runtime == 'podman5'
-        run: |
-          echo "Installing Podman for Mac"
-          cd /tmp
-          wget -nv "https://github.com/containers/podman/releases/download/v5.3.1/podman-installer-macos-universal.pkg"
-          sudo installer -pkg /tmp/podman-installer-macos-universal.pkg -target /
-          export PATH=$PATH:/opt/podman/bin
-
-          # Add Podman to path for future steps.
-          echo "/opt/podman/bin" >> $GITHUB_PATH
-
-          # launch podman
-          podman machine init
-          podman machine start
-
-          # reconfigure timeouts inside podman vm to be compatible with java docker api
-          echo 'mkdir -p /etc/containers/containers.conf.d && printf "[engine]\nservice_timeout=91\n" > /etc/containers/containers.conf.d/service-timeout.conf && systemctl restart podman.socket' |  podman machine ssh --username root --
       
       # Configure podman for ubuntu
       - name: Podman4 Ubuntu
@@ -126,7 +96,7 @@ jobs:
           brew services restart podman
 
       - name: Podman Rootful (podman machine)
-        if: (matrix.projects.runner == 'macos-13' || matrix.projects.runner == 'windows-latest') && (matrix.projects.runtime == 'podman5' || matrix.projects.runtime == 'podman4') && matrix.projects.root == 'rootful'
+        if: matrix.projects.runner == 'windows-latest' && (matrix.projects.runtime == 'podman5' || matrix.projects.runtime == 'podman4') && matrix.projects.root == 'rootful'
         run: |
           podman system connection ls
           podman machine stop
@@ -185,7 +155,7 @@ jobs:
 
       # Install jbang (required to run tests)
       - name: Setup jbang (unix)
-        if: matrix.projects.runner == 'macos-13' || matrix.projects.runner == 'ubuntu-24.04'
+        if: matrix.projects.runner == 'ubuntu-24.04'
         run: |
           curl -Ls "https://sh.jbang.dev" | bash -s - app setup
 
@@ -230,7 +200,7 @@ jobs:
           
       # Build the matrix specificied project with the options configured.
       - name: Build test project (unix)
-        if: matrix.projects.runner == 'macos-13' || matrix.projects.runner == 'ubuntu-24.04'
+        if: matrix.projects.runner == 'ubuntu-24.04'
         run: |
           echo Setting up to build ${{ matrix.projects.project }} with ${{ matrix.projects.java-buildpack-lib-jitpack}} on ${{ matrix.projects.runner }}
           

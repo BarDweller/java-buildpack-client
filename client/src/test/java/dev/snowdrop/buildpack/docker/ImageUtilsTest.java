@@ -25,6 +25,7 @@ import com.github.dockerjava.api.command.InspectImageCmd;
 import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.command.ListImagesCmd;
 import com.github.dockerjava.api.command.PullImageCmd;
+import com.github.dockerjava.api.command.PullImageResultCallback;
 import com.github.dockerjava.api.model.ContainerConfig;
 import com.github.dockerjava.api.model.Image;
 
@@ -76,10 +77,18 @@ public class ImageUtilsTest {
     
     lenient().when(config.getDockerClient()).thenReturn(dc);
     lenient().when(config.getPullPolicy()).thenReturn(DockerConfig.PullPolicy.IF_NOT_PRESENT);
+    lenient().when(config.getPullTimeoutSeconds()).thenReturn(30);
+    lenient().when(config.getPullRetryCount()).thenReturn(0);
+    lenient().when(config.getPullRetryIncreaseSeconds()).thenReturn(0);
     lenient().when(dc.listImagesCmd()).thenReturn(lic);
     lenient().when(lic.exec()).thenReturn(new ArrayList<Image>());
     
     when(dc.pullImageCmd(eq(imageName))).thenReturn(pic);
+    when(pic.exec(ArgumentMatchers.any(PullImageResultCallback.class))).thenAnswer(invocation -> {
+      PullImageResultCallback callback = invocation.getArgument(0);
+      callback.onComplete();
+      return null;
+    });
     
     ImageUtils.pullImages(config, test);
     
@@ -124,6 +133,9 @@ public class ImageUtilsTest {
 
     lenient().when(config.getDockerClient()).thenReturn(dc);
     lenient().when(config.getPullPolicy()).thenReturn(DockerConfig.PullPolicy.IF_NOT_PRESENT);
+    lenient().when(config.getPullTimeoutSeconds()).thenReturn(30);
+    lenient().when(config.getPullRetryCount()).thenReturn(0);
+    lenient().when(config.getPullRetryIncreaseSeconds()).thenReturn(0);
     lenient().when(dc.listImagesCmd()).thenReturn(lic);
 
     List<Image> li = new ArrayList<Image>();
@@ -132,6 +144,11 @@ public class ImageUtilsTest {
     when(i.getRepoTags()).thenReturn(new String[] {imageName});
 
     when(dc.pullImageCmd(eq(imageName))).thenReturn(pic);
+    when(pic.exec(ArgumentMatchers.any(PullImageResultCallback.class))).thenAnswer(invocation -> {
+      PullImageResultCallback callback = invocation.getArgument(0);
+      callback.onComplete();
+      return null;
+    });
     
     ImageUtils.pullImages(config, test);
     
@@ -150,6 +167,9 @@ public class ImageUtilsTest {
 
     lenient().when(config.getDockerClient()).thenReturn(dc);
     lenient().when(config.getPullPolicy()).thenReturn(DockerConfig.PullPolicy.IF_NOT_PRESENT);
+    lenient().when(config.getPullTimeoutSeconds()).thenReturn(30);
+    lenient().when(config.getPullRetryCount()).thenReturn(0);
+    lenient().when(config.getPullRetryIncreaseSeconds()).thenReturn(0);
     lenient().when(dc.listImagesCmd()).thenReturn(lic);
 
     List<Image> li = new ArrayList<Image>();
@@ -158,6 +178,11 @@ public class ImageUtilsTest {
     when(i.getRepoTags()).thenReturn(new String[] {imageName});
 
     when(dc.pullImageCmd(eq(imageName))).thenReturn(pic);
+    when(pic.exec(ArgumentMatchers.any(PullImageResultCallback.class))).thenAnswer(invocation -> {
+      PullImageResultCallback callback = invocation.getArgument(0);
+      callback.onComplete();
+      return null;
+    });
     
     ImageUtils.pullImages(config, test);
     

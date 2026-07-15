@@ -8,8 +8,8 @@ Prototype of a simple buildpack (https://buildpacks.io/) client for java.
 This project represents a simple implementation of the buildpack platform spec, 
 and can be used to build projects using specified buildpacks. 
 
-This project implements up to version 0.10 of the buildpack platform spec, and should
-work with builders requesting from 0.4 through to 0.10. 0.12 is available but experimental.
+This project implements up to version 0.14 of the buildpack platform spec, and should
+work with builders requesting from 0.4 through to 0.14.
 
 A fluent interface is provided to allow creation & configuration
 of the build to be performed. 
