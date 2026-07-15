@@ -200,6 +200,7 @@
       <properties>
         <skipITs>true</skipITs>
         <format.skip>true</format.skip>
+        <gpg.signer>bc</gpg.signer>		  
       </properties>
       <build>
         <plugins>
