@@ -39,8 +39,6 @@ jobs:
           server-id: central
           server-username: MAVEN_USERNAME # Sonatype "snowdrop-team" usertoken: username
           server-password: MAVEN_PASSWORD # Sonatype "snowdrop-team" usertoken: password
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Configure Git author
         run: |
@@ -58,12 +56,13 @@ jobs:
           git commit -m "chore: set release version: ${{steps.metadata.outputs.current-version}} in samples and README.md"
       - name: Maven release ${{steps.metadata.outputs.current-version}}
         run: |
-          mvn -B release:prepare -Prelease -Darguments="-DskipTests" -DreleaseVersion=${{steps.metadata.outputs.current-version}} -DdevelopmentVersion=${{steps.metadata.outputs.next-version}}
-          mvn -B release:perform -Darguments="-DperformRelease -DskipTests" -DperformRelease -Prelease
+          mvn -B release:prepare -Prelease -Darguments="-DskipTests -Dgpg.signer=bc" -DreleaseVersion=${{steps.metadata.outputs.current-version}} -DdevelopmentVersion=${{steps.metadata.outputs.next-version}}
+          mvn -B release:perform -Darguments="-DperformRelease -DskipTests -Dgpg.signer=bc" -DperformRelease -Prelease
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          MAVEN_GPG_KEY: ${{ secrets.GPG_SECRET_KEY }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       - name: Set dev version in the samples and readme
         run: |
           find ./samples/ -iwholename "*/pack.java" | while read f; do
