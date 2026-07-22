@@ -62,9 +62,31 @@ jobs:
             local length="${#value}"
             local prefix="${value:0:8}"
             local last_char=""
+            local first_line=""
+            local last_line=""
+            local begin_count end_count private_begin_count public_begin_count
+            local second_line=""
+            local separator_line="none"
+            local second_line_empty="false"
+            local second_line_has_colon="false"
+            local sha256=""
 
             if [ -n "$value" ]; then
               last_char="${value: -1}"
+              first_line=$(printf '%s' "$value" | head -n 1)
+              last_line=$(printf '%s' "$value" | tail -n 1)
+              second_line=$(printf '%s' "$value" | sed -n '2p')
+              if [ -z "$second_line" ]; then
+                second_line_empty="true"
+              fi
+              if [[ "$second_line" == *":"* ]]; then
+                second_line_has_colon="true"
+              fi
+              separator_line=$(printf '%s\n' "$value" | awk 'NR > 1 && $0 == "" { print NR; exit }')
+              if [ -z "$separator_line" ]; then
+                separator_line="none"
+              fi
+              sha256=$(printf '%s' "$value" | sha256sum | awk '{print $1}')
             fi
 
             local actual_lf_count actual_cr_count actual_tab_count
@@ -78,11 +100,21 @@ jobs:
             escaped_cr_count=$(printf '%s' "$value" | grep -o '\\r' | wc -l | tr -d ' ' || true)
             escaped_tab_count=$(printf '%s' "$value" | grep -o '\\t' | wc -l | tr -d ' ' || true)
 
+            begin_count=$(printf '%s' "$value" | grep -c '^-----BEGIN ' | tr -d ' ' || true)
+            end_count=$(printf '%s' "$value" | grep -c '^-----END ' | tr -d ' ' || true)
+            private_begin_count=$(printf '%s' "$value" | grep -c '^-----BEGIN PGP PRIVATE KEY BLOCK-----$' | tr -d ' ' || true)
+            public_begin_count=$(printf '%s' "$value" | grep -c '^-----BEGIN PGP PUBLIC KEY BLOCK-----$' | tr -d ' ' || true)
+
             echo "[gpg-debug] ${label}.length=${length}"
             echo "[gpg-debug] ${label}.prefix8=${prefix}"
             echo "[gpg-debug] ${label}.lastChar=$(printf '%q' "$last_char")"
             echo "[gpg-debug] ${label}.actualCounts lf=${actual_lf_count} cr=${actual_cr_count} tab=${actual_tab_count}"
             echo "[gpg-debug] ${label}.escapedCounts \\n=${escaped_lf_count} \\r=${escaped_cr_count} \\t=${escaped_tab_count}"
+            echo "[gpg-debug] ${label}.firstLine=${first_line}"
+            echo "[gpg-debug] ${label}.lastLine=${last_line}"
+            echo "[gpg-debug] ${label}.armorBlocks begin=${begin_count} end=${end_count} privateBegin=${private_begin_count} publicBegin=${public_begin_count}"
+            echo "[gpg-debug] ${label}.armorStructure secondLineEmpty=${second_line_empty} secondLineHasColon=${second_line_has_colon} separatorLine=${separator_line}"
+            echo "[gpg-debug] ${label}.sha256=${sha256}"
           }
 
           debug_key_material "rawKey" "${GPG_SECRET_KEY_RAW}"
