@@ -126,6 +126,40 @@ jobs:
             export MAVEN_GPG_KEY=$(echo -n "${GPG_SECRET_KEY_RAW}" | base64 --decode)
           fi
 
+          # Normalize ASCII armor for BC signer: ensure required blank line
+          # between armor headers and base64 payload.
+          export MAVEN_GPG_KEY=$(printf '%s\n' "${MAVEN_GPG_KEY}" | awk '
+            BEGIN { state = 0; inserted = 0 }
+            /^-----BEGIN PGP [A-Z ]+-----$/ {
+              print
+              state = 1
+              next
+            }
+            state == 1 {
+              if ($0 == "") {
+                print
+                state = 2
+                next
+              }
+              if (index($0, ":") > 0) {
+                print
+                next
+              }
+              print ""
+              print
+              state = 2
+              inserted = 1
+              next
+            }
+            { print }
+            END {
+              if (inserted == 1) {
+                # no-op marker to keep awk exit success explicit
+                ;
+              }
+            }
+          ')
+
           debug_key_material "mavenGpgKey" "${MAVEN_GPG_KEY}"
           if [[ "${MAVEN_GPG_KEY}" == *"BEGIN PGP"* ]]; then
             echo "[gpg-debug] mavenGpgKey.containsBeginPgp=true"
