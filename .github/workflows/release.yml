@@ -56,12 +56,51 @@ jobs:
           git commit -m "chore: set release version: ${{steps.metadata.outputs.current-version}} in samples and README.md"
       - name: Maven release ${{steps.metadata.outputs.current-version}}
         run: |
+          debug_key_material() {
+            local label="$1"
+            local value="$2"
+            local length="${#value}"
+            local prefix="${value:0:8}"
+            local last_char=""
+
+            if [ -n "$value" ]; then
+              last_char="${value: -1}"
+            fi
+
+            local actual_lf_count actual_cr_count actual_tab_count
+            local escaped_lf_count escaped_cr_count escaped_tab_count
+
+            actual_lf_count=$(printf '%s' "$value" | tr -cd '\n' | wc -c | tr -d ' ')
+            actual_cr_count=$(printf '%s' "$value" | tr -cd '\r' | wc -c | tr -d ' ')
+            actual_tab_count=$(printf '%s' "$value" | tr -cd '\t' | wc -c | tr -d ' ')
+
+            escaped_lf_count=$(printf '%s' "$value" | grep -o '\\n' | wc -l | tr -d ' ' || true)
+            escaped_cr_count=$(printf '%s' "$value" | grep -o '\\r' | wc -l | tr -d ' ' || true)
+            escaped_tab_count=$(printf '%s' "$value" | grep -o '\\t' | wc -l | tr -d ' ' || true)
+
+            echo "[gpg-debug] ${label}.length=${length}"
+            echo "[gpg-debug] ${label}.prefix8=${prefix}"
+            echo "[gpg-debug] ${label}.lastChar=$(printf '%q' "$last_char")"
+            echo "[gpg-debug] ${label}.actualCounts lf=${actual_lf_count} cr=${actual_cr_count} tab=${actual_tab_count}"
+            echo "[gpg-debug] ${label}.escapedCounts \\n=${escaped_lf_count} \\r=${escaped_cr_count} \\t=${escaped_tab_count}"
+          }
+
+          debug_key_material "rawKey" "${GPG_SECRET_KEY_RAW}"
+
           if [[ "${GPG_SECRET_KEY_RAW}" == *"BEGIN PGP"* ]]; then
             export MAVEN_GPG_KEY="${GPG_SECRET_KEY_RAW}"
           else
             echo "Decoding Base64 GPG secret key..."
             export MAVEN_GPG_KEY=$(echo -n "${GPG_SECRET_KEY_RAW}" | base64 --decode)
-          fi        
+          fi
+
+          debug_key_material "mavenGpgKey" "${MAVEN_GPG_KEY}"
+          if [[ "${MAVEN_GPG_KEY}" == *"BEGIN PGP"* ]]; then
+            echo "[gpg-debug] mavenGpgKey.containsBeginPgp=true"
+          else
+            echo "[gpg-debug] mavenGpgKey.containsBeginPgp=false"
+          fi
+
           mvn -B release:prepare -Prelease -Darguments="-DskipTests -Dgpg.signer=bc" -DreleaseVersion=${{steps.metadata.outputs.current-version}} -DdevelopmentVersion=${{steps.metadata.outputs.next-version}}
           mvn -B release:perform -Darguments="-DperformRelease -DskipTests -Dgpg.signer=bc" -DperformRelease -Prelease
         env:
